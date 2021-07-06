@@ -3,11 +3,11 @@
   <title>忆时光</title>
   
   <subtitle>忆时光</subtitle>
-  <link href="http://lvpsectime.github.io/atom.xml" rel="self"/>
+  <link href="http://mysecroad.github.io/atom.xml" rel="self"/>
   
-  <link href="http://lvpsectime.github.io/"/>
+  <link href="http://mysecroad.github.io/"/>
   <updated>2021-07-05T13:31:08.923Z</updated>
-  <id>http://lvpsectime.github.io/</id>
+  <id>http://mysecroad.github.io/</id>
   
   <author>
     <name>ca5tle</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://lvpsectime.github.io/2021/07/05/hello-world/"/>
-    <id>http://lvpsectime.github.io/2021/07/05/hello-world/</id>
+    <link href="http://mysecroad.github.io/posts/undefined.html"/>
+    <id>http://mysecroad.github.io/posts/undefined.html</id>
     <published>2021-07-05T13:31:08.923Z</published>
     <updated>2021-07-05T13:31:08.923Z</updated>
     
