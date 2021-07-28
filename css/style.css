@@ -1495,13 +1495,12 @@ article .content .caption {
 }
 .highlight .code .comment,
 .highlight .code .quote {
-  color: #006a00;
+  color: #800;
 }
 .highlight .code .keyword,
 .highlight .code .selector-tag,
-.highlight .code .literal {
-  color: #aa0d91;
-}
+.highlight .code .section,
+.highlight .code .title,
 .highlight .code .name {
   color: #008;
 }
@@ -1509,29 +1508,28 @@ article .content .caption {
 .highlight .code .template-variable {
   color: #660;
 }
-.highlight .code .string {
-  color: #c41a16;
-}
-.highlight .code .regexp,
-.highlight .code .link {
+.highlight .code .string,
+.highlight .code .selector-attr,
+.highlight .code .selector-pseudo,
+.highlight .code .regexp {
   color: #080;
 }
-.highlight .code .title,
-.highlight .code .tag,
+.highlight .code .literal,
 .highlight .code .symbol,
 .highlight .code .bullet,
+.highlight .code .meta,
 .highlight .code .number,
-.highlight .code .meta {
-  color: #1c00cf;
+.highlight .code .link {
+  color: #066;
 }
-.highlight .code .section,
-.highlight .code .class .title,
+.highlight .code .title,
+.highlight .code .doctag,
 .highlight .code .type,
 .highlight .code .attr,
 .highlight .code .built_in,
 .highlight .code .builtin-name,
 .highlight .code .params {
-  color: #5c2699;
+  color: #606;
 }
 .highlight .code .attribute,
 .highlight .code .subst {
@@ -1541,15 +1539,15 @@ article .content .caption {
   background-color: #eee;
   font-style: italic;
 }
+.highlight .code .selector-id,
+.highlight .code .selector-class {
+  color: #9b703f;
+}
 .highlight .code .addition {
   background-color: #baeeba;
 }
 .highlight .code .deletion {
   background-color: #ffc8bd;
-}
-.highlight .code .selector-id,
-.highlight .code .selector-class {
-  color: #9b703f;
 }
 .highlight .code .doctag,
 .highlight .code .strong {
