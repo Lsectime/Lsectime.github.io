@@ -676,6 +676,13 @@
   </url>
   
   <url>
+    <loc>http://lvpsectime.github.io/tags/WEB/</loc>
+    <lastmod>2021-07-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://lvpsectime.github.io/tags/%E5%9F%9F/</loc>
     <lastmod>2021-07-28</lastmod>
     <changefreq>daily</changefreq>
@@ -690,7 +697,7 @@
   </url>
   
   <url>
-    <loc>http://lvpsectime.github.io/tags/WEB/</loc>
+    <loc>http://lvpsectime.github.io/tags/ctf/</loc>
     <lastmod>2021-07-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -711,13 +718,6 @@
   </url>
   
   <url>
-    <loc>http://lvpsectime.github.io/tags/ctf/</loc>
-    <lastmod>2021-07-28</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://lvpsectime.github.io/tags/%E6%B8%97%E9%80%8F/</loc>
     <lastmod>2021-07-28</lastmod>
     <changefreq>daily</changefreq>
@@ -725,14 +725,14 @@
   </url>
   
   <url>
-    <loc>http://lvpsectime.github.io/tags/docker/</loc>
+    <loc>http://lvpsectime.github.io/tags/Fuzz/</loc>
     <lastmod>2021-07-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://lvpsectime.github.io/tags/Fuzz/</loc>
+    <loc>http://lvpsectime.github.io/tags/docker/</loc>
     <lastmod>2021-07-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -937,13 +937,6 @@
   </url>
   
   <url>
-    <loc>http://lvpsectime.github.io/categories/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/</loc>
-    <lastmod>2021-07-28</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://lvpsectime.github.io/categories/WEB/</loc>
     <lastmod>2021-07-28</lastmod>
     <changefreq>daily</changefreq>
@@ -951,7 +944,7 @@
   </url>
   
   <url>
-    <loc>http://lvpsectime.github.io/categories/Web/</loc>
+    <loc>http://lvpsectime.github.io/categories/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/</loc>
     <lastmod>2021-07-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -965,7 +958,7 @@
   </url>
   
   <url>
-    <loc>http://lvpsectime.github.io/categories/Docker/</loc>
+    <loc>http://lvpsectime.github.io/categories/Web/</loc>
     <lastmod>2021-07-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -973,6 +966,13 @@
   
   <url>
     <loc>http://lvpsectime.github.io/categories/%E6%B8%97%E9%80%8F/</loc>
+    <lastmod>2021-07-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://lvpsectime.github.io/categories/Docker/</loc>
     <lastmod>2021-07-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
