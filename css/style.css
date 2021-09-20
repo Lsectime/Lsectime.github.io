@@ -1490,70 +1490,55 @@ article .content .caption {
   content: ")";
 }
 .highlight {
-  color: #434f54;
-  background: #fff;
+  background: #2d2d2d;
+  color: #ccc;
 }
-.highlight .code .subst {
-  color: #434f54;
+.highlight .code .comment,
+.highlight .code .quote {
+  color: #999;
 }
-.highlight .code .keyword,
-.highlight .code .attribute,
-.highlight .code .selector-tag,
-.highlight .code .doctag,
-.highlight .code .name {
-  color: #00979d;
-}
-.highlight .code .built_in,
-.highlight .code .literal,
-.highlight .code .bullet,
-.highlight .code .code,
-.highlight .code .addition {
-  color: #d35400;
-}
-.highlight .code .regexp,
-.highlight .code .symbol,
 .highlight .code .variable,
 .highlight .code .template-variable,
-.highlight .code .link,
-.highlight .code .selector-attr,
-.highlight .code .selector-pseudo {
-  color: #00979d;
-}
-.highlight .code .type,
-.highlight .code .string,
+.highlight .code .tag,
+.highlight .code .name,
 .highlight .code .selector-id,
 .highlight .code .selector-class,
-.highlight .code .quote,
-.highlight .code .template-tag,
+.highlight .code .regexp,
 .highlight .code .deletion {
-  color: #005c5f;
+  color: #f2777a;
+}
+.highlight .code .number,
+.highlight .code .built_in,
+.highlight .code .builtin-name,
+.highlight .code .literal,
+.highlight .code .type,
+.highlight .code .params,
+.highlight .code .meta,
+.highlight .code .link {
+  color: #f99157;
+}
+.highlight .code .attribute {
+  color: #fc6;
+}
+.highlight .code .string,
+.highlight .code .symbol,
+.highlight .code .bullet,
+.highlight .code .addition {
+  color: #9c9;
 }
 .highlight .code .title,
 .highlight .code .section {
-  color: #800;
-  font-weight: bold;
+  color: #69c;
 }
-.highlight .code .comment {
-  color: rgba(149,165,166,0.8);
-}
-.highlight .code .meta-keyword {
-  color: #728e00;
-}
-.highlight .code .meta {
-  color: #728e00;
-  color: #434f54;
+.highlight .code .keyword,
+.highlight .code .selector-tag {
+  color: #c9c;
 }
 .highlight .code .emphasis {
   font-style: italic;
 }
 .highlight .code .strong {
   font-weight: bold;
-}
-.highlight .code .function {
-  color: #728e00;
-}
-.highlight .code .number {
-  color: #8a7b52;
 }
 pre {
   overflow-x: auto;
