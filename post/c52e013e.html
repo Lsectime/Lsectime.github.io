@@ -20,7 +20,7 @@
 <meta property="og:image" content="http://lvpsectime.github.io/post/c52e013e/image-20211124213838984.png">
 <meta property="og:image" content="http://lvpsectime.github.io/post/c52e013e/image-20211124213853252.png">
 <meta property="article:published_time" content="2021-10-07T08:45:46.000Z">
-<meta property="article:modified_time" content="2021-11-24T13:39:36.439Z">
+<meta property="article:modified_time" content="2021-11-24T14:01:28.892Z">
 <meta property="article:author" content="ca5tle">
 <meta property="article:tag" content="漏洞复现">
 <meta name="twitter:card" content="summary">
@@ -147,7 +147,7 @@
       
         <time datetime="2021-10-07T08:45:46.000Z" itemprop="datePublished">2021-10-07</time>
         
-        (Updated: <time datetime="2021-11-24T13:39:36.439Z" itemprop="dateModified">2021-11-24</time>)
+        (Updated: <time datetime="2021-11-24T14:01:28.892Z" itemprop="dateModified">2021-11-24</time>)
         
       
     </div>
@@ -184,7 +184,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it 5977a2464108 bash</span><br></pre></td></tr></table></figure>
 
 <p>修改配置文件<code>httpd.conf</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;Directory /&gt;</span><br><span class="line">    Require all granted</span><br><span class="line">&lt;/Directory&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt install vim</span><br><span class="line">vim conf/httpd.conf</span><br><span class="line"></span><br><span class="line">内容如下：</span><br><span class="line">&lt;Directory /&gt;</span><br><span class="line">    Require all granted</span><br><span class="line">&lt;/Directory&gt;</span><br></pre></td></tr></table></figure>
 
 <p><img src="/post/c52e013e/image-20211124212009883.png" alt="image-20211124212009883"></p>
 <p>重启容器</p>
