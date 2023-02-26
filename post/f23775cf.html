@@ -9,20 +9,20 @@
     <meta name="description" content="0x00 前言Apache Druid 是一个分布式的、支持实时多维 OLAP 分析的数据处理系统。它既支持高速的数据实时摄入处理，也支持实时且灵活的多维数据分析查询。因此 Druid 最常用的场景就是大数据背景下、灵活快速的多维 OLAP 分析。Druid 还支持根据时间戳对数据进行预聚合摄入和聚合分析，因此也有用户经常在有时序数据处理分析的场景中使用。 该漏洞是由于用户指定 HTTP Inpu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Apache Druid 任意文件读取漏洞(CVE-2021-36749)">
-<meta property="og:url" content="http://lvpsectime.github.io/post/f23775cf.html">
+<meta property="og:url" content="http://lsectime.github.io/post/f23775cf.html">
 <meta property="og:site_name" content="忆时光">
 <meta property="og:description" content="0x00 前言Apache Druid 是一个分布式的、支持实时多维 OLAP 分析的数据处理系统。它既支持高速的数据实时摄入处理，也支持实时且灵活的多维数据分析查询。因此 Druid 最常用的场景就是大数据背景下、灵活快速的多维 OLAP 分析。Druid 还支持根据时间戳对数据进行预聚合摄入和聚合分析，因此也有用户经常在有时序数据处理分析的场景中使用。 该漏洞是由于用户指定 HTTP Inpu">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://lvpsectime.github.io/post/f23775cf/image-20211206220115839.png">
-<meta property="og:image" content="http://lvpsectime.github.io/post/f23775cf/image-20211206220229598.png">
-<meta property="og:image" content="http://lvpsectime.github.io/post/f23775cf/image-20211206220358096.png">
-<meta property="og:image" content="http://lvpsectime.github.io/post/f23775cf/image-20211206220522968.png">
+<meta property="og:image" content="http://lsectime.github.io/post/f23775cf/image-20211206220115839.png">
+<meta property="og:image" content="http://lsectime.github.io/post/f23775cf/image-20211206220229598.png">
+<meta property="og:image" content="http://lsectime.github.io/post/f23775cf/image-20211206220358096.png">
+<meta property="og:image" content="http://lsectime.github.io/post/f23775cf/image-20211206220522968.png">
 <meta property="article:published_time" content="2021-12-06T13:58:15.000Z">
 <meta property="article:modified_time" content="2021-12-15T14:48:13.098Z">
 <meta property="article:author" content="ca5tle">
 <meta property="article:tag" content="漏洞复现">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://lvpsectime.github.io/post/f23775cf/image-20211206220115839.png">
+<meta name="twitter:image" content="http://lsectime.github.io/post/f23775cf/image-20211206220115839.png">
     
     
       
@@ -88,7 +88,7 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" aria-label="Previous post " href="/post/42951.html"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Previous post " href="/post/34260.html"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" aria-label="Next post " href="/post/4f8efb7f.html"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
@@ -104,17 +104,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://lvpsectime.github.io/post/f23775cf.html"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://lvpsectime.github.io/post/f23775cf.html&text=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://lvpsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://lvpsectime.github.io/post/f23775cf.html&is_video=false&description=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Apache Druid 任意文件读取漏洞(CVE-2021-36749)&body=Check out this article: http://lvpsectime.github.io/post/f23775cf.html"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://lvpsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://lvpsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://lvpsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://lvpsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://lvpsectime.github.io/post/f23775cf.html&name=Apache Druid 任意文件读取漏洞(CVE-2021-36749)&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://lvpsectime.github.io/post/f23775cf.html&t=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://lsectime.github.io/post/f23775cf.html"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://lsectime.github.io/post/f23775cf.html&text=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://lsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://lsectime.github.io/post/f23775cf.html&is_video=false&description=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Apache Druid 任意文件读取漏洞(CVE-2021-36749)&body=Check out this article: http://lsectime.github.io/post/f23775cf.html"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://lsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://lsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://lsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://lsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://lsectime.github.io/post/f23775cf.html&name=Apache Druid 任意文件读取漏洞(CVE-2021-36749)&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://lsectime.github.io/post/f23775cf.html&t=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -232,17 +232,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://lvpsectime.github.io/post/f23775cf.html"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://lvpsectime.github.io/post/f23775cf.html&text=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://lvpsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://lvpsectime.github.io/post/f23775cf.html&is_video=false&description=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Apache Druid 任意文件读取漏洞(CVE-2021-36749)&body=Check out this article: http://lvpsectime.github.io/post/f23775cf.html"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://lvpsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://lvpsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://lvpsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://lvpsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://lvpsectime.github.io/post/f23775cf.html&name=Apache Druid 任意文件读取漏洞(CVE-2021-36749)&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://lvpsectime.github.io/post/f23775cf.html&t=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://lsectime.github.io/post/f23775cf.html"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://lsectime.github.io/post/f23775cf.html&text=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://lsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://lsectime.github.io/post/f23775cf.html&is_video=false&description=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Apache Druid 任意文件读取漏洞(CVE-2021-36749)&body=Check out this article: http://lsectime.github.io/post/f23775cf.html"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://lsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://lsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://lsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://lsectime.github.io/post/f23775cf.html&title=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://lsectime.github.io/post/f23775cf.html&name=Apache Druid 任意文件读取漏洞(CVE-2021-36749)&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://lsectime.github.io/post/f23775cf.html&t=Apache Druid 任意文件读取漏洞(CVE-2021-36749)"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
